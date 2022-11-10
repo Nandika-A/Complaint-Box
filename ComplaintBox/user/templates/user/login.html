@@ -5,6 +5,7 @@
   <title>Authentication system</title>
 </head>
 <body>
+<<<<<<< HEAD
     {% if error %}
 <p><strong>Invalid email or password.</strong></p>
 {% endif %}
@@ -16,3 +17,19 @@
 </form>
 </body>
 </html>
+=======
+<div>
+    <form method = "POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div>
+            <button type = "submit">Sign In</button>
+        </div>
+    </form>
+    <div>
+        <small>Don't have an account?</small>
+        <a href = {% url 'register' %}>Sign Up</a>
+    </div>
+</div>
+</body>
+>>>>>>> origin/tasks

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+AUTH_USER_MODEL = 'user.UserProfile'
 
 from pathlib import Path
 
@@ -90,7 +91,7 @@ WSGI_APPLICATION = 'ComplaintBox.wsgi.application'
 # )
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-""""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -104,7 +105,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
