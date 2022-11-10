@@ -12,7 +12,7 @@ from .models import Comment , TaskHistory
 def homepage(request):
     profiles = UserProfile.objects.filter(role = 'WORKER').order_by('Star__0')
     wfilter = UserProfile.objects.filter(request.GET, queryset = profiles)
-    logging.info("*******",wfilter, profiles)
+    
     wfilter = UserProfile.Filter(request.GET, queryset = profiles)
     profiles = wfilter.qs
     

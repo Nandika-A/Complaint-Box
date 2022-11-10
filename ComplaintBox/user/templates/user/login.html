@@ -1,19 +1,18 @@
 <!DOCTYPE html>
+<html>
 <head>
-    <title>login</title>
+  <meta charset="utf-8">
+  <title>Authentication system</title>
 </head>
 <body>
-<div>
-    <form method = "POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div>
-            <button type = "submit">Sign Up</button>
-        </div>
-    </form>
-    <div>
-        <small>Don't have an account?</small>
-        <a href = {% url 'register' %}>Sign Up</a>
-    </div>
-</div>
+    {% if error %}
+<p><strong>Invalid email or password.</strong></p>
+{% endif %}
+<h2>Log In</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Log In</button>
+</form>
 </body>
+</html>

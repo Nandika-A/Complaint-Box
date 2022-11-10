@@ -50,26 +50,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>profile</title>
+    <title>editi-profile</title>
 </head>
 <body>
-    <div>
-        <h2 class="account-heading">{{ user.username }}</h2>
-          <p class="text-secondary">{{ user.email }}</p>
-          <img class="rounded-circle account-img" src="{{ u.image.url }}">
-          <p class="text-secondary">{{ u.phone_no}}</p>
-          <p class="text-secondary">{{ u.address}}</p>
-          <p class="text-secondary">{{ u.star }}</p>
-          
-          <p class="text-secondary">{{ w.profession}}</p>
-          <p class="text-secondary">{{ w.biodata }}</p>
-          <p class="text-secondary">{{ w.star }}</p>
-          
-        
-        <form action="{% url 'user:editprofile' %}" method="POST"></form>
-        <a href="{% url 'user:editprofile' %}">iio</a>
-        </div>
-
+    <!-- <form method = "POST">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        <button type = "submit">Update login credentials</button>
+    </form> -->
+    <!-- <form method = "POST">
+        {% csrf_token %}
+        {{ profile_form.as_p }}
+        <button type = "submit">Update info</button>
+    </form> -->
+    
+    <form method = "POST">
+        {% csrf_token %}
+        {{ worker_form.as_p }}
+        <button type = "submit">Update worker info</button>
+    </form>
+    
 
 </body>
 </html>

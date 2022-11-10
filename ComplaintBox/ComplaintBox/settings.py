@@ -33,15 +33,26 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'home',
     'user',
-    'django_filters',
-    'django.contrib.postgres',
+    
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # make sure sites is included
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+# the social providers
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.twitter',
+
+    'django_filters',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -73,7 +84,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ComplaintBox.wsgi.application'
 
-
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend', # existing backend
+#     'allauth.account.auth_backends.AuthenticationBackend',
+# )
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 """"
@@ -86,13 +100,8 @@ DATABASES = {
 """
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': '0nMQgFCrb14q5RH27BQ5',
-        'HOST': 'containers-us-west-54.railway.app',
-        'PORT': '7036',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -162,3 +171,9 @@ EMAIL_HOST_PASSWORD = 'pcoifztaswpvfjnh'
 EMAIL_PORT = 587
 LOGIN_REDIRECT_URL = 'homepage'
 LOGIN_URL = 'login'
+
+SITE_ID = 1
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'

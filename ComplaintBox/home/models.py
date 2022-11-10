@@ -2,9 +2,9 @@
 # Create your models here.
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
+
 from user.models import UserProfile , WorkerProfile
-from django.contrib.postgres.fields import ArrayField
+#from django.contrib.postgres.fields import ArrayField
 
 class TaskHistory(models.Model):
      title = models.CharField(max_length=100)
@@ -16,7 +16,7 @@ class TaskHistory(models.Model):
      assigned=models.ForeignKey(WorkerProfile,on_delete=models.CASCADE)  
      profession=models.CharField(max_length=100)
      status=models.CharField(default = "PENDING", max_length = 50)
-     Comments=ArrayField(
-         models.TextField(blank=True,default = None))
+    #  Comments=ArrayField(
+    #      models.TextField(blank=True,default = None))
      def __str__(self):
          return self.title4es

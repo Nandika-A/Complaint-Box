@@ -1,32 +1,42 @@
-from django import forms 
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserProfile, WorkerProfile
-from django.contrib.auth.models import User
+from django import forms
 
+from .models import CustomUser,UserProfile,WorkerProfile
 
-#django form for user registration:
-
-
-class Createuserform(UserCreationForm):
+class SignUpForm(UserCreationForm):
     class Meta:
-        model = User
-        fields = [
-            'username','email','password1', 'password2'
-        ]
-class AddDetails(UserCreationForm):
+        model = CustomUser
+        fields = ("username", "email")
+
+class LogInForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
+class UpdateUserForm(forms.ModelForm):
+    username = forms.CharField(max_length=100,
+                               required=True,
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(required=True,
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = CustomUser
+        fields =("username", "email")
+
+class UpdateProfileForm(forms.ModelForm):
+    image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    #bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    phone_no=forms.CharField()
+    address=forms.CharField(widget=forms.Textarea)
+    
     class Meta:
         model = UserProfile
-        fields = [
-            'image', 'phone_no', 'address',
-        ]
-class AddWorkerDetails(UserCreationForm):
-    class Meta:
-        model=WorkerProfile
-        fields=[
-            'profession', 'biodata',
-        ]
+        fields = ['image', 'phone_no','address']
 
-'''
-created all the fields in one form along with optional ones
-will hide them using html
-'''
+class UpdateWorkerForm(forms.ModelForm):
+    biodata= forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    profession=forms.CharField()
+    
+    class Meta:
+        model = WorkerProfile
+        fields = ['biodata', 'profession']

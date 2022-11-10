@@ -1,88 +1,105 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth import get_user_model
-from django.http import HttpResponse
-from django.contrib.auth import login, authenticate
-from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.decorators import login_required
-from .forms import Createuserform, AddDetails, AddWorkerDetails
+
+# user/views.
+from django.contrib.auth import login, authenticate, logout
+from django.urls import reverse
+from .models import UserProfile, WorkerProfile,CustomUser
+from .forms import SignUpForm, LogInForm, UpdateUserForm, UpdateProfileForm, UpdateWorkerForm
+from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .token import account_activation_token
-from django.contrib.auth.models import User
-from django.core.mail import EmailMessage
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.decorators import login_required
 
-
-def register(request):
+def signup(request):
     if request.method == 'POST':
-        form = Createuserform(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            #save form in memoe=ry but not not in database becuase it will be saved only after the email has beeen verified
-            user =form.save(commit=False)
-            user.is_active=False
-            user.save()
-            #to get domain of current site
-            current_site = get_current_site(request)
-            mail_subject = 'Activation link has been sent to your email id'
-            message = render_to_string('acc_active_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-            })
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            email.send()
-            
-            return HttpResponse('Please confirm your email address to complete registration')
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'your account has been created you can now login using {username}!')
-            return redirect('login')
+            user = form.save()
+            login(request, user)
+            return redirect('home')
     else:
-        form = Createuserform()
-    return render(request, 'user/register.html', {'form': form})
+        form = SignUpForm()   
+    return render(request, 'user/signup.html', {'form': form})
+  
 
-def activate(request,uidb64,token):
-    User=get_user_model()
-    try:
-        uid=uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True #mean user can login
-        user.save()
-        messages.success(request, f'your account has been created you can now login!')
-        return redirect('login')
+
+def log_in(request):
+    error = False
+    if request.user.is_authenticated:
+        return redirect('home')
+    if request.method == "POST":
+        form = LogInForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password"]
+            user = authenticate(email=email, password=password)
+            if user:
+                login(request, user)  
+                return redirect('home')
+            else:
+                error = True
     else:
-        return HttpResponse('Activation link is invalid!')
+        form = LogInForm()
+
+    return render(request, 'user/login.html', {'form': form, 'error': error})
+
+
+def log_out(request):
+    logout(request)
+    return redirect(reverse('user:login'))
+
+from django.contrib.auth.decorators import login_required
+
+
+
 
 @login_required
-def profile(request) :
-    return render(request, 'user/profile.html')
-
-@login_required
-def  edit_profile(request):
+def profile(request):
+    if request.user.is_authenticated:
+        user=request.user.email
+        c=CustomUser.objects.get(email=user)
+        
+        u=UserProfile.objects.get(user=c)
+        
+        w=WorkerProfile.objects.get(worker=u)
+        
+        #w = get_object_or_404(WorkerProfile, worker__user__username=user)
+        #u=get_object_or_404(UserProfile, user__username=user)
+    return render(request, 'user/profile.html', {'w':w,'u': u,'request.user':request.user})
+    #return render(request, 'user/profile.html')
+def editprofile(request):
     if request.method == 'POST':
-        form = AddDetails(request.POST)
-        if form.is_valid():
-            user =form.save
-            user.is_active=False
-            user.save()
-            #to get domain of current site
+        
+        #user_form = UpdateUserForm(request.POST, instance=request.user)
+        #profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user)
+        worker_form=UpdateWorkerForm(request.POST,instance=request.user ) #check if .profile should be there
+        
+        
+        # if user_form.is_valid():
             
-            username = form.cleaned_data.get('username')
-            form1=AddWorkerDetails(request.POST)
-            if form1.is_valid():
-                user =form1.save
-                user.is_active=False
-                user.save()
-                messages.success(request, f'your details has been added you can now use our website, {username}!')
-                return redirect('')
+        #   user_form.save()
+        
+        if worker_form.is_valid():
+            user=request.user.email
+            c=CustomUser.objects.get(email=user)
+            u=UserProfile.objects.get(user=c)
+
+            worker1=worker_form.save()
+            worker1.worker=WorkerProfile.objects.get(worker=u)
+            worker1.save()
+
+            #return redirect('profile')
+
+        
     else:
-        form = AddDetails()
-        form1=AddWorkerDetails()
-    return render(request, 'user/edit_profile.html', {'form': form})
+        #user_form = UpdateUserForm(instance=request.user)
+        #profile_form = UpdateProfileForm(instance=request.user)
+        worker_form=UpdateWorkerForm(instance=request.user)
+    #return render(request, 'user/editprofile.html', {'user_form': user_form, 'profile_form': profile_form, 'worker_form' : worker_form})
+    return render(request, 'user/editprofile.html', {'worker_form': worker_form})
