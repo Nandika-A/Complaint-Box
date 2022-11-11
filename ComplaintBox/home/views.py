@@ -20,32 +20,15 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-def homepage(request):
-    '''
-    profiles = UserProfile.objects.filter(role = 'WORKER').order_by('Star__0')
-<<<<<<< HEAD
-    wfilter = UserProfile.objects.filter(request.GET, queryset = profiles)
-    
-    wfilter = UserProfile.Filter(request.GET, queryset = profiles)
-    profiles = wfilter.qs
-    
-# Create your views here.
-'''
+
 def homepage(request):
     profiles = UserProfile.objects.filter(role = 'WORKER').order_by('Star__0')[:10]
-=======
-    pf = profiles.worker_profile_set.all()
-    wfilter = UserProfileFilter(request.GET, queryset=pf)
-    logging.info("*******",wfilter, profiles)
-    wfilter = UserProfileFilter(request.GET, queryset = profiles)
-    pf = wfilter.qs  
->>>>>>> origin/tasks
     context = {
         "profiles" : profiles,
         #"pf" : pf,
         "count" : profiles.count
     }
-    '''
+    
     professionfilter = WorkerProfile.objects.values_list('profession')
     if request.method == "GET":
         p = request.GET.get('w')
