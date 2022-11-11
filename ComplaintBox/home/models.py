@@ -16,15 +16,8 @@ class TaskHistory(models.Model):
      assigned=models.ForeignKey(WorkerProfile,on_delete=models.CASCADE)  
      profession=models.CharField(max_length=100)
      status=models.CharField(default = "PENDING", max_length = 50)
-<<<<<<< HEAD
     #  Comments=ArrayField(
     #      models.TextField(blank=True,default = None))
-=======
-     Comments=ArrayField(
-         models.TextField(blank=True,default = None))
-     
-     #Comments = models.TextField(blank=True,default = None)
->>>>>>> origin/tasks
      def __str__(self):
          #return self.title4es
          return self.title
